@@ -16,5 +16,6 @@
     "test-coverage": "vitest --coverage",
     "test-watch": "vitest --watch"
   },
+  "type": "module",
   "version": "1.0.0"
 }
