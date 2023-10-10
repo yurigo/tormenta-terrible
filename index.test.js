@@ -67,26 +67,33 @@ test("The episode only has the properties we expect", (t) => {
   t.expect(Object.keys(firstEpisode)).toEqual(correctKeys);
 });
 
-test("number is the correct type", (t) => {
+const hasTitle = Object.keys(firstEpisode).includes("title");
+const hasDuration = Object.keys(firstEpisode).includes("duration");
+const hasNumber = Object.keys(firstEpisode).includes("number");
+const hasId = Object.keys(firstEpisode).includes("id");
+const hasExcerpt = Object.keys(firstEpisode).includes("excerpt");
+const hasPublishedAt = Object.keys(firstEpisode).includes("published_at");
+
+test.skipIf(!hasNumber)("number is the correct type", (t) => {
   t.expect(typeof firstEpisode.number).toBe("string");
 });
 
-test("title is the correct type", (t) => {
+test.skipIf(!hasTitle)("title is the correct type", (t) => {
   t.expect(typeof firstEpisode.title).toBe("string");
 });
 
-test("excerpt is the correct type", (t) => {
+test.skipIf(!hasExcerpt)("excerpt is the correct type", (t) => {
   t.expect(typeof firstEpisode.excerpt).toBe("string");
 });
 
-test("published_at is the correct type", (t) => {
+test.skipIf(!hasPublishedAt)("published_at is the correct type", (t) => {
   t.expect(typeof firstEpisode.published_at).toBe("number");
 });
 
-test("duration is the correct type", (t) => {
+test.skipIf(!hasDuration)("duration is the correct type", (t) => {
   t.expect(typeof firstEpisode.duration).toBe("string");
 });
 
-test("id is the correct type", (t) => {
+test.skipIf(!hasId)("id is the correct type", (t) => {
   t.expect(typeof firstEpisode.id).toBe("string");
 });
