@@ -1,0 +1,20 @@
+{
+  "author": "",
+  "description": "",
+  "devDependencies": {
+    "nodemon": "^3.0.1",
+    "vitest": "^0.34.6"
+  },
+  "keywords": [],
+  "license": "ISC",
+  "main": "index.js",
+  "name": "tormenta-terrible",
+  "scripts": {
+    "dev": "nodemon index.js",
+    "start": "node index.js",
+    "test": "vitest",
+    "test-coverage": "vitest --coverage",
+    "test-watch": "vitest --watch"
+  },
+  "version": "1.0.0"
+}
