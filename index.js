@@ -1,9 +1,15 @@
 import {
   fetchEpisodes,
+  areEpisodesOk,
   processEpisodes,
   printResults,
 } from "./services/episodes.js";
 
-const episodes = await fetchEpisodes();
+let episodes;
+
+while (true) {
+  episodes = await fetchEpisodes();
+  if (areEpisodesOk(episodes)) break;
+}
 
 printResults(processEpisodes(episodes));

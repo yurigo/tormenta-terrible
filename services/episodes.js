@@ -20,7 +20,7 @@ export async function fetchEpisodes() {
  *   el tipo de duration no es correcto
  *   supercoco existe en el objeto (y no debería?)
  */
-function areEpisodesOk(episodes) {
+export function areEpisodesOk(episodes) {
   let failGracefully = 0;
 
   if (episodes.some((ep) => !ep.number || !ep.title)) {
@@ -63,6 +63,7 @@ function areEpisodesOk(episodes) {
   }
 
   if (failGracefully > 0) {
+    console.error("Señor Iguiñez, dejese de tonterías");
     return false;
   }
 
@@ -115,7 +116,6 @@ export function processEpisodes(episodes) {
   if (!episodes || episodes.length === 0) return;
 
   if (!areEpisodesOk(episodes)) {
-    console.error("Señor Iguiñez, dejese de tonterías");
     try {
       episodes = fixEpisodes(episodes);
     } catch (error) {
