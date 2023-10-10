@@ -12,8 +12,65 @@ export async function fetchEpisodes() {
   }
 }
 
+/*
+ *   number no se encuentra en el objeto
+ *   title no se encuentra en el objeto
+ *   duration no se encuentra en el objeto
+ *   el tipo de number no es correcto
+ *   el tipo de duration no es correcto
+ *   supercoco existe en el objeto (y no debería?)
+ */
+function areEpisodesOk(episodes) {
+  let failGracefully = 0;
+
+  if (episodes.some((ep) => !ep.number || !ep.title || !ep.duration)) {
+    console.warn("Some episodes are missing data");
+    failGracefully++;
+  }
+
+  if (episodes.some((ep) => typeof ep.number !== "string")) {
+    console.warn("Some episodes have the wrong type for number");
+    failGracefully++;
+  }
+
+  if (episodes.some((ep) => typeof ep.duration !== "string")) {
+    console.warn("Some episodes have the wrong type for title");
+    failGracefully++;
+  }
+
+  const expectedKeys = [
+    "number",
+    "title",
+    "excerpt",
+    "published_at",
+    "duration",
+    "id",
+  ];
+
+  const extraKeys = episodes.some((ep) => {
+    const keys = Object.keys(ep);
+    return keys.some((key) => !expectedKeys.includes(key));
+  });
+
+  if (extraKeys) {
+    console.warn("Some episodes have extra properties");
+    failGracefully++;
+  }
+
+  if (failGracefully > 0) {
+    console.warn("Skipping processing episodes");
+    return false;
+  }
+
+  return true;
+}
+
 export function processEpisodes(episodes) {
   if (!episodes || episodes.length === 0) return;
+
+  if (!areEpisodesOk(episodes)) {
+    return;
+  }
 
   // Convertir duration a números y ordenar episodios por number
   episodes.forEach((ep) => (ep.duration = parseInt(ep.duration, 10)));
