@@ -23,19 +23,24 @@ export async function fetchEpisodes() {
 function areEpisodesOk(episodes) {
   let failGracefully = 0;
 
-  if (episodes.some((ep) => !ep.number || !ep.title || !ep.duration)) {
-    console.warn("Some episodes are missing data");
+  if (episodes.some((ep) => !ep.number || !ep.title)) {
+    console.warn("Some episodes are missing (non critical) data");
+    // failGracefully++;
+  }
+
+  if (episodes.some((ep) => !ep.duration)) {
+    console.error("Some episodes don't have duration (critical)");
     failGracefully++;
   }
 
   if (episodes.some((ep) => typeof ep.number !== "string")) {
-    console.warn("Some episodes have the wrong type for number");
-    failGracefully++;
+    console.warn("Some episodes have the wrong type for number (non critical)");
+    // failGracefully++;
   }
 
   if (episodes.some((ep) => typeof ep.duration !== "string")) {
-    console.warn("Some episodes have the wrong type for title");
-    failGracefully++;
+    console.error("Some episodes have the wrong type for duration");
+    // failGracefully++;
   }
 
   const expectedKeys = [
@@ -54,22 +59,70 @@ function areEpisodesOk(episodes) {
 
   if (extraKeys) {
     console.warn("Some episodes have extra properties");
-    failGracefully++;
+    //failGracefully++; <-- it doesn't matter if there are extra properties
   }
 
   if (failGracefully > 0) {
-    console.warn("Skipping processing episodes");
     return false;
   }
 
   return true;
 }
 
+/**
+ * Esta función recibe un episodio e intenta arreglar los campos que no están bien.
+ * Si no puede arreglarlo, lanza un error.
+ * Si el episodio no tiene duration pero sí supercoco se tratará de usar supercoco como duration.
+ * El elemento más complicado para arreglar es el duration.
+ * duration puede ser un string o un número. Si es un string es correcto. Si es un número, hay que convertirlo a string
+ * y solamente quedarse con los 4 primeros caracteres.
+ * @param {*} episode
+ * @returns
+ */
+export function fixEpisode(episode) {
+  episode.number = episode.number?.toString();
+  episode.title = episode.title?.toString();
+
+  if (!(episode.duration || episode.supercoco)) {
+    console.error(episode);
+    throw new Error(
+      `Se ha hecho lo que se ha podido pero el episodio ${
+        episode.number || episode.title
+      } no se puede arreglar`
+    );
+  }
+
+  // console.log("supercoco: ", episode.supercoco);
+  // console.log("duration: ", episode.duration);
+
+  if (episode.supercoco) {
+    episode.duration = episode.supercoco;
+    delete episode.supercoco;
+  }
+  episode.duration = episode.duration?.toString().substring(0, 4);
+
+  // console.log("fixed duration", episode.duration);
+
+  return episode;
+}
+
+export function fixEpisodes(episodes) {
+  console.log("fixing episodes");
+  return episodes.map(fixEpisode);
+}
+
 export function processEpisodes(episodes) {
   if (!episodes || episodes.length === 0) return;
 
   if (!areEpisodesOk(episodes)) {
-    return;
+    console.error("Señor Iguiñez, dejese de tonterías");
+    try {
+      episodes = fixEpisodes(episodes);
+    } catch (error) {
+      console.error("Error intentado arreglar episodios:", error.message);
+      console.warn("Skipping processing episodes");
+      return;
+    }
   }
 
   // Convertir duration a números y ordenar episodios por number
@@ -101,9 +154,19 @@ export function processEpisodes(episodes) {
     }
   }
 
-  // Imprimir resultados
-  console.log("Next episode number:", nextEpisodeNumber);
-  console.log("Total duration of all episodes:", totalDuration);
-  console.log("Number of the shortest episode:", shortestEpisode.number);
-  console.log("Titles below 2 hours:", selectedTitles);
+  return {
+    nextEpisodeNumber,
+    totalDuration,
+    shortestEpisode,
+    selectedTitles,
+  };
+}
+
+export function printResults(results) {
+  if (!results) return;
+
+  console.log("Next episode number:", results.nextEpisodeNumber);
+  console.log("Total duration:", results.totalDuration);
+  console.log("Shortest episode:", results.shortestEpisode.title);
+  console.log("Selected titles:", results.selectedTitles);
 }

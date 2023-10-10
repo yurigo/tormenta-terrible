@@ -1,5 +1,5 @@
 import { test, vi } from "vitest";
-import { fetchEpisodes } from "./services/episodes.js";
+import { fetchEpisodes } from "../services/episodes.js";
 
 test("fetchEpisodes should handle errors gracefully", async (t) => {
   // Mock the fetch function to simulate a network error
@@ -47,8 +47,6 @@ test("fetchEpisodes should return an array of episodes greater than 0", async (t
 // };
 
 const firstEpisode = episodes[0];
-
-console.log(firstEpisode);
 
 test("The episode only has the properties we expect", (t) => {
   const correctKeys = [

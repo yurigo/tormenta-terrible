@@ -1,4 +1,9 @@
-import { fetchEpisodes, processEpisodes } from "./services/episodes.js";
+import {
+  fetchEpisodes,
+  processEpisodes,
+  printResults,
+} from "./services/episodes.js";
 
 const episodes = await fetchEpisodes();
-processEpisodes(episodes);
+
+printResults(processEpisodes(episodes));
