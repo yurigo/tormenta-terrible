@@ -1,4 +1,5 @@
-const API_URL = "https://tormenta-codigo-app-terrible.vercel.app/api/podcast";
+const API_URL =
+  "https://tormenta-codigo-app-terrible.vercel.app/api/podcast/terrible";
 
 export async function fetchEpisodes() {
   try {
