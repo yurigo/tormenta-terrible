@@ -36,37 +36,72 @@ test("fetchEpisodes should return an array of episodes greater than 0", async (t
 //   id: "BNDv7ReKDZP2Gnrd9k/W6ADGpkPRj6Prl3nXR",
 // };
 
+const wrongEpisodeExample = {
+  number: "266",
+  title: "WRP 266. \u00bfCliente o servidor? \u00bfFront o Back?",
+  excerpt:
+    "Casos pr\u00e1cticos para entender y dar forma a la arquitectura m\u00e1s t\u00edpica en web.",
+  published_at: 1696460166,
+  id: "BNDv7ReKDZP2Gnrd9k/W6ADGpkPRj6Prl3nXR",
+  supercoco: 2558086972,
+};
+
 const firstEpisode = episodes[0];
 
 console.log(firstEpisode);
 
-test("number, title, excerpt, published_at, duration, id exists", (t) => {
+// test("number, title, excerpt, published_at, duration, id exists", (t) => {
+//   t.expect(firstEpisode.number).toBeDefined();
+//   t.expect(firstEpisode.title).toBeDefined();
+//   t.expect(firstEpisode.excerpt).toBeDefined();
+//   t.expect(firstEpisode.published_at).toBeDefined();
+//   t.expect(firstEpisode.duration).toBeDefined();
+//   t.expect(firstEpisode.id).toBeDefined();
+// });
+
+// one test per property:
+test("number exists", (t) => {
   t.expect(firstEpisode.number).toBeDefined();
-  t.expect(firstEpisode.title).toBeDefined();
-  t.expect(firstEpisode.excerpt).toBeDefined();
-  t.expect(firstEpisode.published_at).toBeDefined();
-  t.expect(firstEpisode.duration).toBeDefined();
-  t.expect(firstEpisode.id).toBeDefined();
 });
 
 test("number is the correct type", (t) => {
   t.expect(typeof firstEpisode.number).toBe("string");
 });
 
+test("title exists", (t) => {
+  t.expect(firstEpisode.title).toBeDefined();
+});
+
 test("title is the correct type", (t) => {
   t.expect(typeof firstEpisode.title).toBe("string");
+});
+
+test("excerpt exists", (t) => {
+  t.expect(firstEpisode.excerpt).toBeDefined();
 });
 
 test("excerpt is the correct type", (t) => {
   t.expect(typeof firstEpisode.excerpt).toBe("string");
 });
 
+test("published_at exists", (t) => {
+  t.expect(firstEpisode.published_at).toBeDefined();
+});
+
 test("published_at is the correct type", (t) => {
   t.expect(typeof firstEpisode.published_at).toBe("number");
 });
 
+test("duration exists", (t) => {
+  t.expect(firstEpisode.duration).toBeDefined();
+});
+
 test("duration is the correct type", (t) => {
   t.expect(typeof firstEpisode.duration).toBe("string");
+});
+
+test("id exists", (t) => {
+  t.expect(firstEpisode.id).toBeDefined();
 });
 
 test("id is the correct type", (t) => {
