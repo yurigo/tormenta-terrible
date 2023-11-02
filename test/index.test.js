@@ -1,4 +1,4 @@
-import { test, vi } from "vitest";
+import { test, vi, expect } from "vitest";
 import { fetchEpisodes } from "../services/episodes.js";
 
 test("fetchEpisodes should handle errors gracefully", async (t) => {
@@ -72,11 +72,26 @@ const hasId = Object.keys(firstEpisode).includes("id");
 const hasExcerpt = Object.keys(firstEpisode).includes("excerpt");
 const hasPublishedAt = Object.keys(firstEpisode).includes("published_at");
 
+test("custom test", () => {
+  expect.extend({
+    toBeTypesOf(received, expected) {
+      const initialType = typeof received;
+      return {
+        message: () =>
+          `expected type of ${received}: ${typeof received} to be type of [${expected.join(
+            ", "
+          )}]`,
+        pass: expected.includes(initialType),
+      };
+    },
+  });
+});
+
 test.runIf(hasNumber)("number is the correct type", (t) => {
-  t.expect(
-    typeof firstEpisode.number === "number" ||
-      typeof firstEpisode.number === "string"
-  ).toBeTruthy();
+  // https://vitest.dev/api/expect.html#tobetypeof
+  // https://vitest.dev/api/expect-typeof.html#tomatchtypeof
+  // https://vitest.dev/api/expect.html#expect-extend
+  t.expect(firstEpisode.number).toBeTypesOf(["string", "number"]);
 });
 
 test.runIf(hasTitle)("title is the correct type", (t) => {
@@ -92,10 +107,7 @@ test.runIf(hasPublishedAt)("published_at is the correct type", (t) => {
 });
 
 test.runIf(hasDuration)("duration is the correct type", (t) => {
-  t.expect(
-    typeof firstEpisode.duration === "number" ||
-      typeof firstEpisode.duration === "string"
-  ).toBeTruthy();
+  t.expect(firstEpisode.duration).toBeTypesOf(["string", "number"]);
 });
 
 test.runIf(hasId)("id is the correct type", (t) => {
