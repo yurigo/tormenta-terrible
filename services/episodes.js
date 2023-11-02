@@ -21,6 +21,8 @@ export async function fetchEpisodes() {
  *   supercoco existe en el objeto (y no debería?)
  */
 export function areEpisodesOk(episodes) {
+  console.log();
+
   let failGracefully = 0;
 
   if (episodes.some((ep) => !ep.number || !ep.title)) {
@@ -62,8 +64,11 @@ export function areEpisodesOk(episodes) {
     //failGracefully++; <-- it doesn't matter if there are extra properties
   }
 
+  console.log();
+
   if (failGracefully > 0) {
     console.error("Señor Iguiñez, dejese de tonterías");
+    console.log();
     return false;
   }
 
@@ -80,36 +85,142 @@ export function areEpisodesOk(episodes) {
  * @param {*} episode
  * @returns
  */
-export function fixEpisode(episode) {
+export function fixEpisode(episode, index, episodes) {
+  console.log(`Arreglando episodio (${index + 1}/${episodes.length})`);
   episode.number = episode.number?.toString();
   episode.title = episode.title?.toString();
 
-  if (!(episode.duration || episode.supercoco)) {
-    console.error(episode);
-    throw new Error(
-      `Se ha hecho lo que se ha podido pero el episodio ${
-        episode.number || episode.title
-      } no se puede arreglar`
-    );
+  if (episode.number === undefined) {
+    console.error("ERROR: No hay numero");
+
+    console.log("Prediciendo número...");
+    episode.number = predecirNumero(episode, index, episodes);
+
+    if (episode.number === undefined) {
+      console.error("❌ FATAL: No se ha podido predecir el número");
+      console.error();
+      return { broken: true };
+    }
+
+    console.log(`  ✅: Predecido: ${episode.number}`);
   }
+
+  if (episode.title === undefined) {
+    const number = episode.number;
+    episode.title = `WRP ${number}. TITULO_${number}_NO_DISPONIBLE`;
+
+    console.log("⚠: Titulo no disponible.  Generando título: ", episode.title);
+  }
+
+  // if (!(episode.duration || episode.supercoco)) {
+  //   console.error("❌ FATAL: No hay duración (ni supercoco)");
+  //   console.error();
+
+  //   return { broken: true };
+  // }
 
   // console.log("supercoco: ", episode.supercoco);
   // console.log("duration: ", episode.duration);
 
-  if (episode.supercoco) {
-    episode.duration = episode.supercoco;
-    delete episode.supercoco;
+  if (!episode.duration) {
+    console.error("⚠: No hay duración");
+
+    console.log("Prediciendo duración...");
+    episode.duration = predecirDuracion(episode);
+
+    if (episode.duration === undefined) {
+      console.error("❌ FATAL: No se ha podido predecir la duración");
+      console.error();
+
+      return { broken: true };
+    }
+
+    delete episode?.supercoco;
+
+    console.log(`  ✅: Predecido: ${episode.duration}`);
   }
+
   episode.duration = episode.duration?.toString().substring(0, 4);
 
-  // console.log("fixed duration", episode.duration);
+  console.log("🦄 Arreglado! 🦄");
+  console.log();
 
   return episode;
 }
 
+function extraerNumeroDeTitulo(episode) {
+  const number = episode.title?.match(/\d+/)?.[0];
+  return number;
+}
+
+function predecirDuracion(episode) {
+  if (episode?.supercoco) console.log("  ✅: Usando supercoco como duración");
+
+  return episode?.supercoco;
+}
+
+function extraerNumeroDeAnteriores(episodes, index) {
+  let numero = undefined;
+  let i = 1;
+  while (numero === undefined) {
+    if (i > 100) {
+      break;
+    }
+    numero = Number(episodes[index - i]?.number) - i;
+    i++;
+  }
+  return numero;
+}
+
+function extraerNumeroDePosteriores(episodes, index) {
+  let numero = undefined;
+  let i = 1;
+  while (numero === undefined) {
+    if (i > 100) {
+      break;
+    }
+    numero = Number(episodes[index + i]?.number) + i;
+    i++;
+  }
+  return numero;
+}
+
+function predecirNumero(episode, index, episodes) {
+  // console.log(index, episode);
+  // console.log(index, episodes[index - 1]);
+  // console.log(index, episodes[index + 1]);
+
+  let numero = undefined;
+  let i = 1;
+
+  console.log("  Extrayendo numero de título... ");
+  numero = extraerNumeroDeTitulo(episode);
+  if (numero) return numero;
+
+  console.log("  ❌: No se ha podido extraer el número del título");
+  console.log("  Probando con episodios anteriores...");
+
+  numero = extraerNumeroDeAnteriores(episodes, index);
+  if (numero) return numero;
+
+  console.log("  ❌: No se ha podido predecir el número");
+  console.log("  Probando con episodios posteriores...");
+
+  numero = extraerNumeroDePosteriores(episodes, index);
+  if (numero) return numero;
+
+  console.log("  ❌: No se ha podido predecir el número");
+
+  return numero;
+}
+
 export function fixEpisodes(episodes) {
-  console.log("fixing episodes");
+  console.log(`Arreglando episodios... (${episodes.length})`);
   return episodes.map(fixEpisode);
+}
+
+function filterNotFixed(episodes) {
+  return episodes.filter((ep) => !ep.broken);
 }
 
 export function processEpisodes(episodes) {
@@ -118,12 +229,38 @@ export function processEpisodes(episodes) {
   if (!areEpisodesOk(episodes)) {
     try {
       episodes = fixEpisodes(episodes);
+      const totalCountEpisodes = episodes.length;
+
+      episodes = filterNotFixed(episodes);
+      const fixedCountEpisodes = episodes.length;
+
+      console.log();
+
+      console.log(
+        "Se han arreglado",
+        fixedCountEpisodes,
+        "episodios de",
+        totalCountEpisodes
+      );
+
+      console.log(
+        "No se han podido arreglar: ",
+        totalCountEpisodes - fixedCountEpisodes
+      );
+
+      console.log();
     } catch (error) {
-      console.error("Error intentado arreglar episodios:", error.message);
+      console.error(
+        "Error intentado arreglar episodios:",
+        error.message,
+        error
+      );
       console.warn("Skipping processing episodes");
       return;
     }
   }
+
+  console.log();
 
   // Convertir duration a números y ordenar episodios por number
   episodes.forEach((ep) => (ep.duration = parseInt(ep.duration, 10)));
