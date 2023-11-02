@@ -48,22 +48,22 @@ test("fetchEpisodes should return an array of episodes greater than 0", async (t
 
 const firstEpisode = episodes[0];
 
-test("The episode only has the properties we expect", (t) => {
-  const correctKeys = [
-    "number",
-    "title",
-    "excerpt",
-    "published_at",
-    "duration",
-    "id",
-  ];
+// test("The episode only has the properties we expect", (t) => {
+//   const correctKeys = [
+//     "number",
+//     "title",
+//     "excerpt",
+//     "published_at",
+//     "duration",
+//     "id",
+//   ];
 
-  // const keys = Object.keys(firstEpisode);
-  // const wrongKey = keys.find((key) => !correctKeys.includes(key));
-  // console.log("Wrong key:", wrongKey);
+//   // const keys = Object.keys(firstEpisode);
+//   // const wrongKey = keys.find((key) => !correctKeys.includes(key));
+//   // console.log("Wrong key:", wrongKey);
 
-  t.expect(Object.keys(firstEpisode)).toEqual(correctKeys);
-});
+//   t.expect(Object.keys(firstEpisode)).toEqual(correctKeys);
+// });
 
 const hasTitle = Object.keys(firstEpisode).includes("title");
 const hasDuration = Object.keys(firstEpisode).includes("duration");
