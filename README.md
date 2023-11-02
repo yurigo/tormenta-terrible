@@ -29,3 +29,14 @@ Errores detectados:
 - el tipo de `duration` no es correcto
 - `supercoco` existe en el objeto (y no debería?)
 
+<hr />
+
+Se han propuesto dos soluciones:
+
+**Brute force**
+
+https://github.com/yurigo/tormenta-terrible/tree/reload-until-ok
+
+**Reverse Engineer Fixing Algorithm**
+
+https://github.com/yurigo/tormenta-terrible/tree/master
