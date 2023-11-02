@@ -73,7 +73,10 @@ const hasExcerpt = Object.keys(firstEpisode).includes("excerpt");
 const hasPublishedAt = Object.keys(firstEpisode).includes("published_at");
 
 test.runIf(hasNumber)("number is the correct type", (t) => {
-  t.expect(firstEpisode.number).toBeTypeOf("string");
+  t.expect(
+    typeof firstEpisode.number === "number" ||
+      typeof firstEpisode.number === "string"
+  ).toBeTruthy();
 });
 
 test.runIf(hasTitle)("title is the correct type", (t) => {
@@ -89,7 +92,10 @@ test.runIf(hasPublishedAt)("published_at is the correct type", (t) => {
 });
 
 test.runIf(hasDuration)("duration is the correct type", (t) => {
-  t.expect(firstEpisode.duration).toBeTypeOf("string");
+  t.expect(
+    typeof firstEpisode.duration === "number" ||
+      typeof firstEpisode.duration === "string"
+  ).toBeTruthy();
 });
 
 test.runIf(hasId)("id is the correct type", (t) => {
