@@ -40,3 +40,10 @@ https://github.com/yurigo/tormenta-terrible/tree/reload-until-ok
 **Reverse Engineer Fixing Algorithm**
 
 https://github.com/yurigo/tormenta-terrible/tree/master
+
+<hr />
+
+Se ha mejorado el test para no fallar ante el terrible Iñiguez
+
+https://github.com/yurigo/tormenta-terrible/tree/test-to-accept-i%C3%B1iguez
+
